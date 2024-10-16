@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from "@/context/authContext"
+import Link from "next/link";
 
 // import { useEffect, useState } from 'react';
 // import axios from 'axios';
@@ -66,6 +67,13 @@ const Dashboard = () => {
         <button
         onClick={logout}
         className='py-2 bg-red-500 p-4 hover:bg-red-400'>Log Out</button>
+      </div>
+
+
+      <div className="mt-12">
+      <Link className="p-4 bg-green-500 " href="/dashboard/register" >
+          Register
+      </Link>
       </div>
     </div>
   )
