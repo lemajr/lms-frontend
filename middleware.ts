@@ -8,9 +8,9 @@ export function middleware(req: NextRequest) {
   console.log("Requested URL:", url.pathname); // Debugging: check the current URL
 
   // If no token is found and user is not on the login page, redirect to login
-  if (!token && url.pathname !== '/login') {
+  if (!token && url.pathname !== '/') {
     console.log("No token found, redirecting to login...");
-    url.pathname = '/login';
+    url.pathname = '/';
     return NextResponse.redirect(url);
   }
 
@@ -19,5 +19,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/profile/:path*'], // Protect additional routes if needed
+  matcher: ['/student-dashboard/:path*', '/profile/:path*'], 
 };
