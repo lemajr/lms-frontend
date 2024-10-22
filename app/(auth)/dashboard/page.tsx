@@ -6,7 +6,7 @@ import { useAuth } from "@/context/authContext";
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 
-const Dashboard = () => {
+const StudentDashboard = () => {
   const { logout } = useAuth();
   const [token, setToken] = useState<string>();
 
@@ -46,4 +46,4 @@ const Dashboard = () => {
   );
 }
 
-export default Dashboard;
+export default StudentDashboard;

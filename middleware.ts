@@ -8,9 +8,9 @@ export function middleware(req: NextRequest) {
   console.log("Requested URL:", url.pathname); // Debugging: check the current URL
 
   // If no token is found and user is not on the login page, redirect to login
-  if (!token && url.pathname !== '/') {
+  if (!token && url.pathname !== '/login') {
     console.log("No token found, redirecting to login...");
-    url.pathname = '/';
+    url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 

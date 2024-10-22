@@ -60,7 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     Cookies.remove('access_token'); // Remove token cookie
     setUser(null);
-    router.push('/');
+    router.push('/login');
   };
 
   // Unified effect for token expiration and session management
@@ -115,7 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       Cookies.set('access_token', token, { expires: 1, secure: true, sameSite: 'strict' }); // Set token in cookie
       setUser(token); // Set user token
-      router.push('/student-dashboard'); // Redirect after successful login
+      router.push('/dashboard'); // Redirect after successful login
     } catch (err) {
       console.error('Login error:', err);
       throw new Error('Login failed. Please check your credentials.');

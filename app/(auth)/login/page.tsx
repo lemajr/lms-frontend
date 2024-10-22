@@ -1,6 +1,6 @@
 import LoginForm from "@/components/LoginForm"
 
-const LogIn = () => {
+const StudentLogIn = () => {
   return (
     <div>
       <LoginForm />
@@ -8,4 +8,4 @@ const LogIn = () => {
   )
 }
 
-export default LogIn
+export default StudentLogIn
