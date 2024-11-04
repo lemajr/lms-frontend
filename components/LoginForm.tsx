@@ -1,5 +1,7 @@
 'use client'
 import { useAuth } from '@/context/authContext';
+import Image from 'next/image';
+import { FiUser, FiLock } from 'react-icons/fi';
 import { useState } from 'react';
 
 interface FormState {
@@ -11,6 +13,7 @@ export default function Login() {
   const { login } = useAuth();
   const [formData, setFormData] = useState<FormState>({ username: '', password: '' });
   const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -24,63 +27,104 @@ export default function Login() {
     e.preventDefault();
     setError('');
     try {
+      setIsLoading(true);
       await login(formData);
     } catch (err) {
+      setIsLoading(false);
       setError('Login failed. Please check your credentials.');
     }
   };
 
   return (
-    <div className="flex flex-col justify-center h-screen">
-      <div className="w-full max-w-sm mx-auto overflow-hidden bg-white rounded-lg shadow-md dark:bg-gray-800">
-        <div className="px-6 py-4">
-          <h3 className="mt-3 text-xl font-medium text-center text-gray-600 dark:text-gray-200">
-            Welcome Back
-          </h3>
-          <p className="mt-1 text-center text-gray-500 dark:text-gray-400">Login or create account</p>
+    <section className="h-screen bg-[url('/bg.svg')] bg-no-repeat bg-center bg-cover flex justify-center items-center relative">
+      {/* Overlay for better contrast */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="w-full mt-4">
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                required
-                className="block w-full px-4 py-2 mt-2 bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-600"
-                placeholder="Email Address"
-              />
-            </div>
-
-            <div className="w-full mt-4">
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-                className="block w-full px-4 py-2 mt-2 bg-white border rounded-lg dark:bg-gray-800 dark:border-gray-600"
-                placeholder="Password"
-              />
-            </div>
-
-            {error && <p className="text-red-500 py-3 ">{error}</p>}
-
-            <div className="flex items-center justify-between mt-4">
-              <a href="#" className="text-sm text-gray-600 dark:text-gray-200 hover:text-gray-500">
-                Forget Password?
-              </a>
-
-              <button
-                type="submit"
-                className="px-6 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-400"
-              >
-                Sign In
-              </button>
-            </div>
-          </form>
+      {/* Logo and Form Container */}
+      <div className="relative z-10 w-full max-w-md p-6 backdrop-blur-md rounded-lg xl:lg:shadow-lg xl:lg:bg-white/5">
+        {/* Logo Image */}
+        <div className="flex justify-center mb-6">
+          <Image
+            src="/logo.png"
+            alt="logo"
+            height={100}
+            width={100}
+            className="filter brightness-0 invert" // This applies a white effect to the logo
+          />
         </div>
+
+        {/* Login Form */}
+        <form className="px-3" onSubmit={handleSubmit}>
+          <div className="relative w-full mb-4">
+            <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-100" />
+            <input
+              type="text"
+              name='username'
+              value={formData.username}
+              onChange={handleInputChange}
+              required
+              placeholder="Username"
+              className="w-full pl-10 pr-2 py-3 bg-transparent border-2 border-white text-sm text-gray-100 placeholder-[#f1f1f1b9] focus:outline-none focus:ring-2 focus:ring-[#6d73e6] rounded"
+            />
+          </div>
+          <div className="relative w-full mb-2">
+            <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-100" />
+            <input
+              type="password"
+              name='password'
+              value={formData.password}
+              onChange={handleInputChange}
+              required
+              placeholder="Password"
+              className="w-full pl-10 pr-2 py-3 bg-transparent border-2 border-white text-sm text-gray-100 placeholder-[#f1f1f1b9] focus:outline-none focus:ring-2 focus:ring-[#6d73e6] rounded"
+            />
+          </div>
+          {error &&
+            <div className="text-red-500 " role="alert">
+              <strong className="font-bold underline">Oops!</strong>
+              <span className="block sm:inline"> {error}</span>
+
+            </div>
+          }
+          {isLoading ? (
+            <button
+              type="submit"
+              className="w-full mt-3 py-3 text-base font-medium text-[#6d73e6] bg-white shadow-2xl rounded-md hover:bg-white/90"
+              disabled
+            >
+              <svg
+                className="animate-spin h-5 w-5 mr-3 inline-block text-[#6d73e6]"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8z"
+                ></path>
+              </svg>
+              Processing...
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="w-full mt-3 py-3 text-base font-medium text-[#6d73e6] bg-white shadow-2xl rounded-md hover:bg-white/90"
+            >
+              Login
+            </button>
+          )}
+
+        </form>
       </div>
-    </div>
+    </section>
   );
 }
