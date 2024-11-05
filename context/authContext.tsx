@@ -31,11 +31,12 @@ interface DecodedToken {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 // Utility function to check token expiration
-const isTokenExpired = (token: string): boolean => {
+const isTokenExpired = (token: string): number => {
   const { exp } = jwtDecode<DecodedToken>(token);
   const currentTime = Math.floor(Date.now() / 1000);
-  return exp < currentTime;
+  return exp - currentTime; // Returns the remaining time in seconds
 };
+
 
 // Utility function to set cookies
 const setAuthCookies = (token: string, role: string) => {
@@ -93,7 +94,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Refresh session to extend token expiration
   const refreshSession = async () => {
     const currentAccessToken = Cookies.get('access_token');
-    if (!currentAccessToken) return logout();
+    const role = Cookies.get('role');
+
+    console.log("Access Token:", currentAccessToken);
+    console.log("Role:", role);
+
+    if (!currentAccessToken || !role) return logout();
 
     try {
       const response = await axios.post(
@@ -110,14 +116,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  // Handle token expiration
   const handleTokenExpiration = () => {
     const token = Cookies.get('access_token');
-    if (token && isTokenExpired(token)) {
-      const stayLoggedIn = window.confirm('Your session is about to expire. Do you want to stay logged in?');
-      stayLoggedIn ? refreshSession() : logout();
+  
+    if (token) {
+      const timeRemaining = isTokenExpired(token);
+  
+      if (timeRemaining > 0 && timeRemaining <= 120) {
+        const stayLoggedIn = window.confirm('Your session is about to expire in 2 minutes. Do you want to stay logged in?');
+        stayLoggedIn ? refreshSession() : logout();
+      } else if (timeRemaining <= 0) {
+        // Log out immediately if the token has already expired
+        logout();
+      }
     }
   };
+  
 
   // Initialize user session on component mount
   useEffect(() => {
@@ -131,7 +145,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(false);
 
     const interval = setInterval(handleTokenExpiration, 60000);
-    return () => clearInterval(interval);
+    return () => clearInterval(interval);     
   }, []);
 
   return (

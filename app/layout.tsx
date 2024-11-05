@@ -1,17 +1,40 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { AuthProvider } from "@/context/authContext";
+import { Roboto, Poppins, Comfortaa, Rajdhani } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const rajdhani = Rajdhani({
+  weight: ['400', '700'],
+  style: ['normal',],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-rajdhani',
+})
+
+
+const roboto = Roboto({
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-roboto',
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const poppins = Poppins({
+  weight: ['400', '700', '200', '500', '100'],
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-poppins',
+});
+
+const comfortaa = Comfortaa({
+  weight: ['400', '700', '500', '600'],
+  style: ['normal'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-comfortaa',
 });
 
 export const metadata: Metadata = {
@@ -27,10 +50,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${roboto.variable} ${poppins.variable} ${comfortaa.variable} ${rajdhani.variable} comfortaa antialiased`}
       >
         <AuthProvider>
           {children}
+          <Toaster />
+
         </AuthProvider>
       </body>
     </html>

@@ -47,9 +47,10 @@ export default function Login() {
           <Image
             src="/logo.png"
             alt="logo"
-            height={100}
-            width={100}
-            className="filter brightness-0 invert" // This applies a white effect to the logo
+            height={75}
+            width={75}
+            priority={true}
+            className="filter brightness-0 invert w-[100px]" // This applies a white effect to the logo
           />
         </div>
 

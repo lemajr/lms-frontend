@@ -1,12 +1,38 @@
+import LogoutButton from "@/components/LogoutButton";
+import Menu from "@/components/Menu";
+import Navbar from "@/components/Navbar";
+import Image from "next/image";
+import Link from "next/link";
 
-const HomeLayout = ({
+
+const DashboardLayout = ({
     children,
   }: Readonly<{
     children: React.ReactNode;
   }>) => {
+
   return (
-    <div>{children}</div>
+    <div className="h-screen flex overflow-hidden ">
+      {/* LEFT */}
+      <div className="w-[14%] md:w-[8%] lg:w-[14%] p-2 flex flex-col">
+        <Link href="/" className="flex flex-col justify-start gap-2">
+          <Image src="/logo.png" alt="logo" width={80} height={80} className="" />
+        </Link>
+        <div className="flex-1 overflow-y-auto mt-4">
+          <Menu/>
+        </div>
+        <div>
+          {/* logi out */}
+         <LogoutButton />
+        </div>
+      </div>
+      {/* RIGHT */}
+      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] ">
+        <Navbar />
+        {children}
+      </div>
+    </div>
   )
 }
 
-export default HomeLayout
+export default DashboardLayout;
