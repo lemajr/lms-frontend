@@ -3,12 +3,12 @@ import React, { createContext, useState, useEffect, useContext, ReactNode } from
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
-// Define interfaces for user and auth types
+// Define interfaces
 interface User {
   token: string;
-  role: string;
+  role: 'admin' | 'lecturer' | 'student';
 }
 
 interface AuthContextType {
@@ -27,39 +27,41 @@ interface DecodedToken {
   exp: number;
 }
 
-// AuthContext for sharing auth data across the app
+// Create AuthContext
 const AuthContext = createContext<AuthContextType | null>(null);
 
-// Utility function to check token expiration
-const isTokenExpired = (token: string): number => {
-  const { exp } = jwtDecode<DecodedToken>(token);
-  const currentTime = Math.floor(Date.now() / 1000);
-  return exp - currentTime; // Returns the remaining time in seconds
+// Utility: check token expiration
+const isTokenExpired = (token: string): boolean => {
+  try {
+    const { exp } = jwtDecode<DecodedToken>(token);
+    const currentTime = Math.floor(Date.now() / 1000);
+    return currentTime >= exp; // True if expired
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return true;
+  }
 };
 
-
-// Utility function to set cookies
+// Utility: set cookies
 const setAuthCookies = (token: string, role: string) => {
   Cookies.set('access_token', token, { expires: 1, secure: true, sameSite: 'strict' });
   Cookies.set('role', role, { expires: 1, secure: true, sameSite: 'strict' });
 };
 
-
-// Utility function to clear cookies
+// Utility: clear cookies
 const clearAuthCookies = () => {
   Cookies.remove('access_token');
   Cookies.remove('role');
 };
 
-// AuthProvider component to provide auth functionality to the app
+// AuthProvider
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Handle login and role-based redirection
+  // Login handler
   const login = async (formData: LoginForm) => {
-    
     try {
       const response = await axios.post(
         'http://localhost:8000/api/v1/auth/login',
@@ -68,38 +70,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       );
 
       const { access_token: token, role } = response.data;
-      setAuthCookies(token, role);
-      setUser({ token, role });
-      redirectToDashboard(role);
+      if (["admin", "lecturer", "student"].includes(role)) {
+        setAuthCookies(token, role);
+        setUser({ token, role: role as User["role"] });
+        router.push('/dashboard');
+      } else {
+        throw new Error("Invalid role");
+      }
     } catch (err) {
       console.error('Login error:', err);
       throw new Error('Login failed. Please check your credentials.');
     }
   };
 
-  // Redirect users based on their role
-  const redirectToDashboard = (role: string) => {
-    if (role === 'admin') router.push('/dashboard/admin');
-    else if (role === 'lecturer') router.push('/dashboard/lecturer');
-    else if (role === 'student') router.push('/dashboard/student');
-  };
 
-  // Handle logout and cleanup
+  // Logout handler
   const logout = () => {
     clearAuthCookies();
     setUser(null);
     router.push('/login');
   };
 
-  // Refresh session to extend token expiration
+  // Refresh session to extend expiration
   const refreshSession = async () => {
     const currentAccessToken = Cookies.get('access_token');
-    const role = Cookies.get('role');
+    const role = Cookies.get('role') as User["role"];
 
-    console.log("Access Token:", currentAccessToken);
-    console.log("Role:", role);
-
-    if (!currentAccessToken || !role) return logout();
+    if (!currentAccessToken || !role || !["admin", "lecturer", "student"].includes(role)) {
+      return logout();
+    }
 
     try {
       const response = await axios.post(
@@ -109,43 +108,37 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       );
 
       const newToken = response.data.access_token;
-      setAuthCookies(newToken, user?.role || '');
-      setUser((prevUser) => (prevUser ? { ...prevUser, token: newToken } : null));
+      setAuthCookies(newToken, role);
+      setUser({ token: newToken, role });
     } catch (error) {
       logout();
     }
   };
 
+  // Token expiration handling
   const handleTokenExpiration = () => {
     const token = Cookies.get('access_token');
-  
     if (token) {
-      const timeRemaining = isTokenExpired(token);
-  
-      if (timeRemaining > 0 && timeRemaining <= 120) {
-        const stayLoggedIn = window.confirm('Your session is about to expire in 2 minutes. Do you want to stay logged in?');
-        stayLoggedIn ? refreshSession() : logout();
-      } else if (timeRemaining <= 0) {
-        // Log out immediately if the token has already expired
+      const isExpired = isTokenExpired(token);
+      if (isExpired) {
         logout();
       }
     }
   };
-  
 
-  // Initialize user session on component mount
+  // Initialize session on mount
   useEffect(() => {
     const token = Cookies.get('access_token');
-    const role = Cookies.get('role');
-    if (token && role && !isTokenExpired(token)) {
+    const role = Cookies.get('role') as User["role"];
+    if (token && role && !isTokenExpired(token) && ["admin", "lecturer", "student"].includes(role)) {
       setUser({ token, role });
     } else {
       logout();
     }
     setLoading(false);
 
-    const interval = setInterval(handleTokenExpiration, 60000);
-    return () => clearInterval(interval);     
+    const interval = setInterval(handleTokenExpiration, 60000); // Check every minute
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -155,5 +148,5 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-// Custom hook to use auth context
+// Hook to use auth context
 export const useAuth = () => useContext(AuthContext) as AuthContextType;

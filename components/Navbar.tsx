@@ -1,29 +1,56 @@
-import Image from 'next/image'
+'use client';
+
+import Image from 'next/image';
+import { useUser } from '@/lib/useUser';
+import Cookies from 'js-cookie';
+import { useAuth } from '@/context/authContext';
 
 const Navbar = () => {
+  const { user } = useAuth();
+  const token = user?.token || '';
+  
+  // Check role from AuthContext or cookies, then narrow it to expected types
+  const role = (user?.role || Cookies.get('role')) as string;
+  const validRole = ["admin", "lecturer", "student"].includes(role) ? role as "admin" | "lecturer" | "student" : undefined;
+
+  // Conditionally fetch user data based on role if it’s a valid role
+  const { user: userData } = validRole ? useUser(token, validRole) : { user: null };
+
   return (
     <div className='flex items-center justify-between p-4'>
       {/* Welcome Note */}
       <div className='hidden md:flex'>
-        <p className='text-gray-700 text-lg  poppins'>Dashboard</p>
+        <p className='text-gray-700 text-lg poppins'>Dashboard</p>
       </div>
-      {/* ICONS AND USER */}
+      
+      {/* Icons and User Information */}
       <div className='flex items-center gap-6 justify-end w-full'>
-        <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer' >
+        {/* Message Icon */}
+        <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
           <Image src="/message.png" alt='message' width={20} height={20} />
         </div>
+        
+        {/* Announcement Icon with Notification */}
         <div className='relative bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
-          <Image src="/announcement.png" alt='message' width={20} height={20} />
+          <Image src="/announcement.png" alt='announcement' width={20} height={20} />
           <div className='absolute -top-3 -right-3 w-5 h-5 flex items-center justify-center bg-purple-500 rounded-full text-white'>2</div>
         </div>
+        
+        {/* User Info */}
         <div className='flex flex-col'>
-          <span className='text-xs leading-3 font-medium'>John Doe</span>
-          <span className='text-[10px] text-gray-500 text-right'>Admin</span>
+          <span className='text-xs leading-3 font-medium'>
+            {userData?.full_name || 'User'}
+          </span>
+          <span className='text-[10px] text-gray-500 text-right capitalize'>
+            {validRole || 'Role'}
+          </span>
         </div>
+        
+        {/* Avatar */}
         <Image src="/avatar.png" alt='avatar' width={36} height={36} className='rounded-full' />
       </div>
     </div>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;

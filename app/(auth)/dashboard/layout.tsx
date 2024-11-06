@@ -15,7 +15,7 @@ const DashboardLayout = ({
     <div className="h-screen flex overflow-hidden ">
       {/* LEFT */}
       <div className="w-[14%] md:w-[8%] lg:w-[14%] p-2 flex flex-col">
-        <Link href="/" className="flex flex-col justify-start gap-2">
+        <Link href="/dashboard" className="flex flex-col justify-start gap-2">
           <Image src="/logo.png" alt="logo" width={80} height={80} className="" />
         </Link>
         <div className="flex-1 overflow-y-auto mt-4">
