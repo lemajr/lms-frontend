@@ -11,7 +11,6 @@ const menuItems = [
       { icon: "/teacher.png", label: "Lecturers", href: "/dashboard/lecturers" },
       { icon: "/student.png", label: "Students", href: "/dashboard/students" },
       { icon: "/class.png", label: "Classes", href: "/dashboard/classes" },
-      { icon: "/calendar.png", label: "Events", href: "/dashboard/events" },
       { icon: "/announcement.png", label: "Announcements", href: "/dashboard/announcements" },
     ],
   },

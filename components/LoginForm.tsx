@@ -57,7 +57,7 @@ export default function Login() {
         {/* Login Form */}
         <form className="px-3" onSubmit={handleSubmit}>
           <div className="relative w-full mb-4">
-            <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-100" />
+            <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-100 " />
             <input
               type="text"
               name='username'
