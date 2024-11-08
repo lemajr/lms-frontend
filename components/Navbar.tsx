@@ -17,7 +17,7 @@ const Navbar = () => {
   const { user: userData } = validRole ? useUser(token, validRole) : { user: null };
 
   return (
-    <div className='flex items-center justify-between p-4'>
+    <div className='flex items-center justify-between p-4 top-0 sticky z-10'>
       {/* Welcome Note */}
       <div className='hidden md:flex'>
         <p className='text-gray-700 text-lg poppins'>Dashboard</p>

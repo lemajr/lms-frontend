@@ -42,7 +42,7 @@ const Menu = () => {
                 key={item.label}
                 className={`flex items-center justify-center p-2 lg:justify-start gap-4 py-2 rounded-md ${isActive
                     ? "bg-purple-400 text-white"
-                    : "text-gray-500 hover:bg-purple-400 hover:text-white"
+                    : "text-gray-500 hover:bg-purple-300 hover:text-white"
                   }`}
               >
                 <Image width={20} height={20} src={item.icon} alt={item.label} />

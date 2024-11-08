@@ -12,13 +12,13 @@ const DashboardLayout = ({
   }>) => {
 
   return (
-    <div className="h-screen flex overflow-hidden ">
+    <div className="h-dvh flex">
       {/* LEFT */}
       <div className="w-[14%] md:w-[8%] lg:w-[14%] p-2 flex flex-col">
         <Link href="/dashboard" className="flex flex-col justify-start gap-2">
           <Image src="/logo.png" alt="logo" width={80} height={80} className="" />
         </Link>
-        <div className="flex-1 overflow-y-auto mt-4">
+        <div className="flex-1 mt-4">
           <Menu/>
         </div>
         <div>
@@ -27,7 +27,7 @@ const DashboardLayout = ({
         </div>
       </div>
       {/* RIGHT */}
-      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] ">
+      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-y-auto">
         <Navbar />
         {children}
       </div>
