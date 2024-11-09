@@ -6,18 +6,32 @@ import { useState } from "react";
 
 // USE LAZY LOADING
 
+// Lazy load forms using dynamic imports
+
 const LecturerForm = dynamic(() => import("./forms/LecturerForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const StudentForm = dynamic(() => import("./forms/StudentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const AnnouncementForm = dynamic(() => import("./forms/AnnouncementForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+// const AttendanceForm = dynamic(() => import("./forms/AttendanceForm"), {
+//   loading: () => <h1>Loading...</h1>,
+// });
 
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
 } = {
-  lectuer: (type, data) => <LecturerForm type={type} data={data} />,
-  student: (type, data) => <StudentForm type={type} data={data} />
+  lecturer: (type, data) => <LecturerForm type={type} data={data} />,
+  student: (type, data) => <StudentForm type={type} data={data} />,
+  class: (type, data) => <ClassForm type={type} data={data} />,
+  announcement: (type, data) => <AnnouncementForm type={type} data={data} />,
+
 };
 
 const FormModal = ({
@@ -42,7 +56,7 @@ const FormModal = ({
       ? "bg-yellow-200"
       : type === "update"
       ? "bg-yellow-200"
-      : "bg-purple-200";
+      : "bg-purple-300";
 
   const [open, setOpen] = useState(false);
 
@@ -52,7 +66,7 @@ const FormModal = ({
         <span className="text-center font-medium">
           All data will be lost. Are you sure you want to delete this {table}?
         </span>
-        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
+        <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-full self-center">
           Delete
         </button>
       </form>

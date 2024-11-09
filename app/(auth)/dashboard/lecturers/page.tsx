@@ -2,13 +2,13 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, teachersData } from "@/lib/data";
+import { role, LecturersData } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 
-type Teacher = {
+type Lecturer = {
   id: number;
-  teacherId: string;
+  LecturerId: string;
   name: string;
   email?: string;
   photo: string;
@@ -55,7 +55,7 @@ const columns = [
 ];
 
 const LecturerListPage = () => {
-  const renderRow = (item: Teacher) => (
+  const renderRow = (item: Lecturer) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-purple-50"
@@ -73,7 +73,7 @@ const LecturerListPage = () => {
           <p className="text-xs text-gray-500">{item?.email}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">{item.teacherId}</td>
+      <td className="hidden md:table-cell">{item.LecturerId}</td>
       <td className="hidden md:table-cell">{item.subjects.join(",")}</td>
       <td className="hidden md:table-cell">{item.classes.join(",")}</td>
       <td className="hidden md:table-cell">{item.phone}</td>
@@ -81,8 +81,8 @@ const LecturerListPage = () => {
       <td>
         <div className="flex items-center gap-2">
           <Link href={`lecturers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-yellow-200">
-              <Image src="/view.png" alt="" width={16} height={16} />
+            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-blue-100">
+              <Image src="/view.png" className="" alt="" width={16} height={16} />
             </button>
           </Link>
           {role === "admin" && (
@@ -120,7 +120,7 @@ const LecturerListPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={teachersData} />
+      <Table columns={columns} renderRow={renderRow} data={LecturersData} />
       {/* PAGINATION */}
       <Pagination />
     </div>
