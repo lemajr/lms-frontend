@@ -17,7 +17,7 @@ const announcementSchema = z.object({
 
 type AnnouncementFormData = z.infer<typeof announcementSchema>;
 
-const AnnouncementForm = ({ type, data, setOpen }: { type: "create" | "update"; data?: any; setOpen: Function }) => {
+const AnnouncementForm = ({ type, data}: { type: "create" | "update"; data?: any;}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<AnnouncementFormData>({
     resolver: zodResolver(announcementSchema),
     defaultValues: data || {
@@ -35,7 +35,6 @@ const AnnouncementForm = ({ type, data, setOpen }: { type: "create" | "update"; 
       // Handle updating announcement
       console.log("Update announcement:", formData);
     }
-    setOpen(false); // Close the form modal after submit
   };
 
   return (
