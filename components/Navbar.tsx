@@ -9,12 +9,12 @@ const Navbar = () => {
   const { user } = useAuth();
   const token = user?.token || '';
 
-  // Check role from AuthContext or cookies, then narrow it to expected types
+  // Check role from AuthContext or cookies
   const role = (user?.role || Cookies.get('role')) as string;
-  const validRole = ["admin", "lecturer", "student"].includes(role) ? role as "admin" | "lecturer" | "student" : undefined;
+  const validRole = ["admin", "lecturer", "student"].includes(role) ? role as "admin" | "lecturer" | "student" : 'student';  // Default to 'student' if undefined
 
-  // Conditionally fetch user data based on role if it’s a valid role
-  const { user: userData } = validRole ? useUser(token, validRole) : { user: null };
+  // Always call the useUser hook
+  const { user: userData } = useUser(token, validRole);
 
   return (
     <div className='flex items-center justify-between p-4 top-0 sticky z-10'>
@@ -47,8 +47,13 @@ const Navbar = () => {
         </div>
 
         {/* Avatar */}
-        <Image src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-        alt='avatar' width={36} height={36} className='rounded-full h-[36px]' />
+        <Image 
+          src="https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2020&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt='avatar'
+          width={36}
+          height={36}
+          className='rounded-full h-[36px]'
+        />
       </div>
     </div>
   );
