@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const SettingsPage = () => {
   // Mock user data
-  const [user, setUser] = useState({
+  const [user] = useState({
     id: "1",
     name: "lemajr",
     email: "lema.jr@example.com",

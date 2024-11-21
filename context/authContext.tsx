@@ -64,7 +64,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (formData: LoginForm) => {
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/v1/auth/login',
+        'https://backend-lms-api.vercel.app/api/v1/auth/login',
         formData,
         { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, withCredentials: true }
       );
@@ -102,7 +102,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     try {
       const response = await axios.post(
-        'http://localhost:8000/api/v1/auth/token/refresh',
+        'https://backend-lms-api.vercel.app/api/v1/auth/token/refresh',
         {},
         { headers: { Authorization: `Bearer ${currentAccessToken}` }, withCredentials: true }
       );
